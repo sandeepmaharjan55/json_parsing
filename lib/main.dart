@@ -6,6 +6,11 @@ import 'package:http/http.dart' as http;
 void main() async {
   List _data = await getJSON();
   List _dataProgress = await getJSONprogress();
+  // print(_dataProgress[0]["coins"]);
+  //  for (var i = 0; i < _dataProgress.length; i++) {
+  //  print(_dataProgress[i]["coins"].sort());
+  // }
+  // _dataProgress[0]["coins"].sort();
   // _dataProgress.sort((a, b) {
   //   return a.value['coins'].compareTo(b.value['coins']);
   // });
@@ -35,11 +40,14 @@ void main() async {
 
   _getSteps(String s) {
     String steps = "0";
+    double kmsteps = 0;
     for (var i = 0; i < _dataProgress.length; i++) {
       if ('${_dataProgress[i]["detail"]}' == s) {
         // print(s);
         // print('${_dataProgress[i]["detail"]}');
-        steps = '${_dataProgress[i]["distance"]}';
+        kmsteps = _dataProgress[i]["distance"] * 0.0008;
+        // print(kmsteps);
+        steps = kmsteps.toStringAsFixed(1);
         // print(greencoins);
         break;
       } else {
@@ -48,50 +56,63 @@ void main() async {
       // print(greencoins);
       // print("Title: ${_dataProgress[i]["coins"]}");
     }
-    return steps;
+    return steps + "km";
   }
 
   runApp(new MaterialApp(
     home: new Scaffold(
       appBar: AppBar(
-        title: Text("JSON Parsing"),
+        title: Text("Json Users"),
         backgroundColor: Colors.orangeAccent,
       ),
       // listView builder
       body: ListView.builder(
-          itemCount: _data.length,
-          padding: const EdgeInsets.all(4.4),
-          itemBuilder: (BuildContext context, int position) {
-            return Column(children: <Widget>[
-              Divider(
-                height: 3.4,
-              ),
-              ListTile(
-                title: Center(
-                  child: Text(
-                    "${_data[position]['user_name']}",
-                    style:
-                        TextStyle(fontSize: 17.2, fontWeight: FontWeight.bold),
-                  ),
+        itemCount: _data.length,
+        padding: const EdgeInsets.all(3.0),
+        itemBuilder: (BuildContext context, int position) {
+          return Column(children: <Widget>[
+            Divider(
+              height: 3.4,
+            ),
+            ListTile(
+              title: Center(
+                child: Text(
+                  "${_data[position]['user_name']}",
+                  style: TextStyle(fontSize: 17.2, fontWeight: FontWeight.bold),
                 ),
-                // contentPadding: const EdgeInsets.all(30.0),
-                subtitle: new Column(
-                  children: <Widget>[
-                    // Row(
-                    //   children: [
-                    //     new Image.network("${_data[position]['user_img']}",
-                    //         height: 70, width: 70),
-                    //     new Text(
-                    //       "${_data[position]['fb_id']}",
-                    //     ),
-                    //   ],
-                    // ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        new Image.network("${_data[position]['user_img']}",
-                            height: 70, width: 70),
-                        Column(
+              ),
+              // contentPadding: const EdgeInsets.all(30.0),
+              subtitle: new Column(
+                children: <Widget>[
+                  // Row(
+                  //   children: [
+                  //     new Image.network("${_data[position]['user_img']}",
+                  //         height: 70, width: 70),
+                  //     new Text(
+                  //       "${_data[position]['fb_id']}",
+                  //     ),
+                  //   ],
+                  // ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // Container(
+                      //   child: new Image.network(
+                      //     "${_data[position]['user_img']}",
+                      //     height: 70,
+                      //     width: 70,
+                      //   ),
+                      // ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image(
+                          image: NetworkImage('${_data[position]['user_img']}'),
+                          height: 70,
+                          width: 70,
+                        ),
+                      ),
+                      Container(
+                        child: Column(
                           children: [
                             Text(
                               "Green Coins",
@@ -105,10 +126,12 @@ void main() async {
                             ),
                           ],
                         ),
-                        Column(
+                      ),
+                      Container(
+                        child: Column(
                           children: [
                             Text(
-                              "Total Steps",
+                              "Walked",
                               style: TextStyle(
                                   fontSize: 17.2, fontWeight: FontWeight.bold),
                             ),
@@ -119,15 +142,18 @@ void main() async {
                             ),
                           ],
                         ),
-                        // contentPadding: const EdgeInsets.all(30.0),
-                        // subtitle: Text('${_data.length}'),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                      // contentPadding: const EdgeInsets.all(30.0),
+                      // subtitle: Text('${_data.length}'),
+                    ],
+                  ),
+                ],
               ),
-            ]);
-          }),
+              // leading: CircleAvatar(),
+            ),
+          ]);
+        },
+      ),
     ),
   ));
 }
