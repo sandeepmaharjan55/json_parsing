@@ -150,12 +150,32 @@ void main() async {
                 ],
               ),
               // leading: CircleAvatar(),
+              onTap: () => showTapMessage(context, _data[position]['user_name'],
+                  _data[position]['user_img']),
             ),
           ]);
         },
       ),
     ),
   ));
+}
+
+void showTapMessage(BuildContext context, String message, String image) {
+  var alertDialog = new AlertDialog(
+    title: Text(message),
+    content: Image.network(image),
+    actions: [
+      FlatButton(
+        onPressed: () => Navigator.of(context).pop(),
+        child: Text("OK"),
+      )
+    ],
+  );
+  showDialog(
+      context: context,
+      builder: (context) {
+        return alertDialog;
+      });
 }
 
 Future<List> getJSON() async {
